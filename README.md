@@ -4,6 +4,14 @@
 
 ### Install
 
+#### Module
+
+```
+npm i foxfire --save-dev
+```
+
+#### Global 
+
 (Might require `sudo`)
 
 ```
