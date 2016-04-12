@@ -1,0 +1,23 @@
+{
+  "name": "foxfire",
+  "version": "1.0.0",
+  "bin": {
+    "foxfire": "bin/foxfire"
+  },
+  "description": "Firefox Launcher with clean and custom profiles",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "firefox",
+    "launcher"
+  ],
+  "author": "vladikoff",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "3.3.4",
+    "cross-spawn-async": "2.2.1",
+    "debug": "2.2.0"
+  }
+}
