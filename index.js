@@ -18,14 +18,16 @@ var SPAWN_OPTIONS = {
 
 module.exports = function (options) {
   options = options || {};
-  debug(options)
+  debug('options', options)
 
+  var userJsContents = ''
+  Object.keys(DEFAULT_PROFILE_OPTIONS).forEach(function (option) {
+    userJsContents += 'user_pref("' + option + '", ' + false + ');\n';
+  });
   if (options.profileOptions) {
     // user.js contents
-    var userJsContents = ''
-    Object.keys(DEFAULT_PROFILE_OPTIONS).forEach(function (option) {
-      userJsContents += 'user_pref("' + option + '", ' + false + ');\n';
-    });
+
+
     Object.keys(options.profileOptions).forEach(function (option) {
       var prefVal = options.profileOptions[option]
       if (prefVal === false) {
@@ -36,9 +38,9 @@ module.exports = function (options) {
         userJsContents += 'user_pref("' + option + '", "' + options.profileOptions[option] + '");\n';
       }
     });
-
-    debug(userJsContents)
   }
+
+  debug('user.js', userJsContents)
 
   if (options.args) {
     ARGS += options.args
@@ -63,7 +65,7 @@ module.exports = function (options) {
       })
     });
   }).then(function (profileDetails) {
-    debug(profileDetails)
+    debug('profileDetails', profileDetails)
     fs.writeFileSync(profileDetails.profileLocation + 'user.js', userJsContents)
 
     var child = spawn(BINARY, ['-p', profileDetails.profileName, '-foreground'].concat(ARGS), SPAWN_OPTIONS);
