@@ -4,9 +4,14 @@
   "bin": {
     "foxfire": "bin/foxfire"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vladikoff/foxfire"
+  },
   "description": "Firefox Launcher with clean and custom profiles",
   "main": "index.js",
   "scripts": {
+    "start": "bin/foxfire",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -19,5 +24,9 @@
     "bluebird": "3.3.4",
     "cross-spawn-async": "2.2.1",
     "debug": "2.2.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-jsdoc": "^1.1.0"
   }
 }

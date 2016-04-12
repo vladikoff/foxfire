@@ -1,3 +1,7 @@
+/**
+ foxfire - Firefox launcher main module
+ @module
+ */
 var crypto = require('crypto');
 var debug = require('debug')('index');
 var fs = require('fs');
@@ -16,6 +20,28 @@ var SPAWN_OPTIONS = {
   stdio: 'inherit'
 };
 
+/**
+ * Launch Firefox.
+ * @param {Object} options - launcher options
+ * @param {Object} options.profileOptions - Firefox profile options
+ * @param {Array} options.args - Firefox arguments, see developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options
+ *
+ * @example
+ * // starts Firefox with debugger open and browser chrome devtools enabled.
+ * var foxfire = require('foxfire')
+ * foxfire({
+ *  args: [ '-jsdebugger'],
+ *  profileOptions: {  'devtools.chrome.enabled': true }
+ * });
+ *
+ * @example
+ * // CLI Usage
+ * foxfire
+ *
+ * @example
+ * // CLI Usage with custom Firefox executable
+ * FIREFOX_BIN=/Applications/FirefoxNightly.app/Contents/MacOS/firefox-bin foxfire
+ */
 module.exports = function (options) {
   options = options || {};
   debug('options', options)
