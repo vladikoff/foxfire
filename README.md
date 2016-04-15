@@ -4,15 +4,17 @@
 
 ### Install
 
+Install node.js (npm should be available in your terminal app)
+
 #### Module
 
 ```
 npm i foxfire --save-dev
 ```
 
-#### Global 
+#### Global Command-line
 
-(Might require `sudo`)
+(Install might require `sudo`)
 
 ```
 npm i -g foxfire
