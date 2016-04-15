@@ -1,24 +1,17 @@
-# foxfire
-
+# foxfire 
 > Firefox Launcher with clean and custom profiles without WebDriver
+
+<img src=http://i.imgur.com/dDa2Eej.gif width=500 />
 
 ### Install
 
-Install node.js (npm should be available in your terminal app)
+> Install node.js (npm should be available in your terminal app)
 
-#### Module
+#### Module: `npm install foxfire --save-dev`
 
-```
-npm i foxfire --save-dev
-```
+#### Global Command-line: `npm install -g foxfire`
 
-#### Global Command-line
-
-(Install might require `sudo`)
-
-```
-npm i -g foxfire
-```
+> (Install might require `sudo`)
 
 ### Usage
 
