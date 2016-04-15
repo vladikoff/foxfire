@@ -3,19 +3,23 @@
 
 <img src=http://i.imgur.com/dDa2Eej.gif width=500 />
 
-### Install
-
 > Install node.js (npm should be available in your terminal app)
 
-#### Module: `npm install foxfire --save-dev`
+#### Module install: `npm install foxfire --save-dev`
+
+****
 
 #### Global Command-line: `npm install -g foxfire`
 
-> (Install might require `sudo`)
+> Global install will probably require `sudo` on OS X
+
+****
 
 ### Usage
 
 See [docs.md](docs.md).
+
+****
 
 ### Changelog
 
