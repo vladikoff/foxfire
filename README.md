@@ -23,5 +23,6 @@ See [docs.md](docs.md).
 
 ### Changelog
 
+- 1.1.0 - Firefox profile names have a new format now. The format is `ffire-[date+time]`
 - 1.0.1 - adjust default user.js flags, update debug
 - 1.0.0 - init release

@@ -7,6 +7,7 @@ var debug = require('debug')('index');
 var fs = require('fs');
 var Promise = require('bluebird');
 var spawn = require('cross-spawn-async');
+var dateFormat = require('dateformat');
 
 var paths = require('./paths');
 
@@ -44,9 +45,9 @@ var SPAWN_OPTIONS = {
  */
 module.exports = function (options) {
   options = options || {};
-  debug('options', options)
+  debug('options', options);
 
-  var userJsContents = ''
+  var userJsContents = '';
   Object.keys(DEFAULT_PROFILE_OPTIONS).forEach(function (option) {
     userJsContents += 'user_pref("' + option + '", ' + false + ');\n';
   });
@@ -55,7 +56,7 @@ module.exports = function (options) {
 
 
     Object.keys(options.profileOptions).forEach(function (option) {
-      var prefVal = options.profileOptions[option]
+      var prefVal = options.profileOptions[option];
       if (prefVal === false) {
         userJsContents += 'user_pref("' + option + '", ' + false + ');\n';
       } else if (prefVal === true) {
@@ -66,14 +67,14 @@ module.exports = function (options) {
     });
   }
 
-  debug('user.js', userJsContents)
+  debug('user.js', userJsContents);
 
   if (options.args) {
     ARGS += options.args
   }
 
   return new Promise(function (resolve, reject) {
-    var profileName = crypto.randomBytes(14).toString('hex');
+    var profileName = 'ffire' + dateFormat("dd.mm.yy-h.MM.ss");
     var child = spawn(BINARY, ['-CreateProfile', profileName], {});
 
     // collect output from -CreateProfile
@@ -84,15 +85,15 @@ module.exports = function (options) {
 
     child.on('close', function (code) {
       // extract profileLocation
-      var profileLocation = out.trim().substring(out.indexOf('at \'') + 4, out.length - 10)
+      var profileLocation = out.trim().substring(out.indexOf('at \'') + 4, out.length - 10);
       return resolve({
         profileName: profileName,
         profileLocation: profileLocation
       })
     });
   }).then(function (profileDetails) {
-    debug('profileDetails', profileDetails)
-    fs.writeFileSync(profileDetails.profileLocation + 'user.js', userJsContents)
+    debug('profileDetails', profileDetails);
+    fs.writeFileSync(profileDetails.profileLocation + 'user.js', userJsContents);
 
     var child = spawn(BINARY, ['-p', profileDetails.profileName, '-foreground'].concat(ARGS), SPAWN_OPTIONS);
     child.on('close', function (code) {
