@@ -22,6 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "3.3.4",
+    "commander": "2.9.0",
     "cross-spawn-async": "2.2.1",
     "dateformat": "1.0.12",
     "debug": "2.2.0"
