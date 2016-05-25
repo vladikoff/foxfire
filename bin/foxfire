@@ -1,3 +1,12 @@
 #!/usr/bin/env node
 
-require('../index')();
+var args = require('commander');
+
+args
+  .version('0.0.1')
+  .option('-r, --remote <name>', 'Name of remote FxA-dev stack, e.g., `latest`')
+  .parse(process.argv);
+
+require('../index')({
+  remoteUrl: args.remote
+});

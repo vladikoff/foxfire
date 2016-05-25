@@ -5,6 +5,7 @@
 var crypto = require('crypto');
 var debug = require('debug')('index');
 var fs = require('fs');
+var fxaDevOptions = require('./fxa-dev-options');
 var Promise = require('bluebird');
 var spawn = require('cross-spawn-async');
 var dateFormat = require('dateformat');
@@ -48,29 +49,41 @@ module.exports = function (options) {
   debug('options', options);
 
   var userJsContents = '';
-  Object.keys(DEFAULT_PROFILE_OPTIONS).forEach(function (option) {
-    userJsContents += 'user_pref("' + option + '", ' + false + ');\n';
-  });
+
+  function getPrefString(prefName, prefVal) {
+    return 'user_pref("' + prefName + '", ' + JSON.stringify(prefVal) + ');\n';
+  }
+
+  if (options.remoteUrl) {
+    Object.keys(fxaDevOptions).forEach(function (prefName) {
+      var prefVal = fxaDevOptions[prefName];
+
+      if (typeof prefVal === 'string') {
+        prefVal = prefVal.replace('%(remoteUrl)s', options.remoteUrl);
+      }
+
+      userJsContents += getPrefString(prefName, prefVal);
+    });
+  } else {
+    Object.keys(DEFAULT_PROFILE_OPTIONS).forEach(function (prefName) {
+      var prefVal = DEFAULT_PROFILE_OPTIONSF[prefName];
+      userJsContents += getPrefString(prefName, prefVal);
+    });
+  }
+
+
   if (options.profileOptions) {
     // user.js contents
-
-
-    Object.keys(options.profileOptions).forEach(function (option) {
+    Object.keys(options.profileOptions).forEach(function (prefName) {
       var prefVal = options.profileOptions[option];
-      if (prefVal === false) {
-        userJsContents += 'user_pref("' + option + '", ' + false + ');\n';
-      } else if (prefVal === true) {
-        userJsContents += 'user_pref("' + option + '", ' + true + ');\n';
-      } else {
-        userJsContents += 'user_pref("' + option + '", "' + options.profileOptions[option] + '");\n';
-      }
+      userJsContents += getPrefString(prefName, prefVal);
     });
   }
 
   debug('user.js', userJsContents);
 
   if (options.args) {
-    ARGS += options.args
+    ARGS += options.args;
   }
 
   return new Promise(function (resolve, reject) {
@@ -80,7 +93,7 @@ module.exports = function (options) {
     // collect output from -CreateProfile
     var out = '';
     child.stderr.on('data', function (data) {
-      out += data
+      out += data;
     });
 
     child.on('close', function (code) {
@@ -89,7 +102,7 @@ module.exports = function (options) {
       return resolve({
         profileName: profileName,
         profileLocation: profileLocation
-      })
+      });
     });
   }).then(function (profileDetails) {
     debug('profileDetails', profileDetails);
@@ -99,5 +112,5 @@ module.exports = function (options) {
     child.on('close', function (code) {
       console.log('Firefox closed. Code:', code);
     });
-  })
+  });
 };
