@@ -11,7 +11,6 @@ module.exports = {
   'identity.fxaccounts.remote.webchannel.uri': 'https://%(remoteUrl)s.dev.lcip.org/',
   'identity.fxaccounts.settings.uri': 'https://%(remoteUrl)s.dev.lcip.org/settings?service=sync&context=fx_desktop_v3',
   'services.sync.log.appender.file.logOnSuccess': true,
-  'identity.sync.tokenServerURI': 'https://%(remoteUrl)s.dev.lcip.org/syncserver/token/1.0/sync/1.5',
-  'services.sync.tokenServerURI': 'https://%(remoteUrl)s.dev.lcip.org/syncserver/token/1.0/sync/1.5',
+  'identity.sync.tokenserver.uri': 'https://%(remoteUrl)s.dev.lcip.org/syncserver/token/1.0/sync/1.5'
 };
 
