@@ -2,24 +2,11 @@
  foxfire - Firefox launcher main module
  @module
  */
-var crypto = require('crypto');
 var debug = require('debug')('index');
-var fs = require('fs');
+var launchFirefox = require('./lib/launch-firefox');
+var profileCreator = require('./lib/profile-creator');
 var Promise = require('bluebird');
-var spawn = require('cross-spawn-async');
-var dateFormat = require('dateformat');
-
-var paths = require('./paths');
-
-var DEFAULT_PROFILE_OPTIONS = {
-  'browser.shell.checkDefaultBrowser': false
-};
-
-var BINARY = paths.detectBinary();
-var ARGS = [];
-var SPAWN_OPTIONS = {
-  stdio: 'inherit'
-};
+var userJsContents = require('./lib/user-js-contents');
 
 /**
  * Launch Firefox.
@@ -47,57 +34,32 @@ module.exports = function (options) {
   options = options || {};
   debug('options', options);
 
-  var userJsContents = '';
-  Object.keys(DEFAULT_PROFILE_OPTIONS).forEach(function (option) {
-    userJsContents += 'user_pref("' + option + '", ' + false + ');\n';
-  });
-  if (options.profileOptions) {
-    // user.js contents
+  var prefs = userJsContents(options.profileOptions);
+  debug('user.js', prefs);
 
+  var firefoxBinary = options.firefoxBinary || process.env.FIREFOX_BIN || require('firefox-location');
+  var profileName = options.profileName || process.env.PROFILE_NAME;
+  var createProfile = options.createProfile || process.env.CREATE_PROFILE || profileName;
 
-    Object.keys(options.profileOptions).forEach(function (option) {
-      var prefVal = options.profileOptions[option];
-      if (prefVal === false) {
-        userJsContents += 'user_pref("' + option + '", ' + false + ');\n';
-      } else if (prefVal === true) {
-        userJsContents += 'user_pref("' + option + '", ' + true + ');\n';
-      } else {
-        userJsContents += 'user_pref("' + option + '", "' + options.profileOptions[option] + '");\n';
+  Promise.resolve(createProfile && profileCreator(firefoxBinary, prefs, profileName))
+    .then(function (profileInfo) {
+      if (profileInfo) {
+        console.log('Profile named', profileInfo.profileName, 'stored at', profileInfo.profileLocation);
+        return profileInfo.profileLocation;
       }
-    });
-  }
+    })
+    .then(function (profileLocation) {
+      // if profileLocation is not specified, a temporary profile is created with `prefs`
+      var args = options.args || [];
 
-  debug('user.js', userJsContents);
-
-  if (options.args) {
-    ARGS += options.args
-  }
-
-  return new Promise(function (resolve, reject) {
-    var profileName = 'ffire' + dateFormat("dd.mm.yy-h.MM.ss");
-    var child = spawn(BINARY, ['-CreateProfile', profileName], {});
-
-    // collect output from -CreateProfile
-    var out = '';
-    child.stderr.on('data', function (data) {
-      out += data
-    });
-
-    child.on('close', function (code) {
-      // extract profileLocation
-      var profileLocation = out.trim().substring(out.indexOf('at \'') + 4, out.length - 10);
-      return resolve({
-        profileName: profileName,
-        profileLocation: profileLocation
-      })
-    });
-  }).then(function (profileDetails) {
-    debug('profileDetails', profileDetails);
-    fs.writeFileSync(profileDetails.profileLocation + 'user.js', userJsContents);
-
-    var child = spawn(BINARY, ['-p', profileDetails.profileName, '-foreground'].concat(ARGS), SPAWN_OPTIONS);
-    child.on('close', function (code) {
+      return launchFirefox(firefoxBinary, args, {
+        profileLocation: profileLocation,
+        prefs: prefs
+      });
+    })
+    .then(function (code) {
       console.log('Firefox closed. Code:', code);
+
+      process.exit(code);
     });
-  })
 };
