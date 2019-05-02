@@ -24,7 +24,9 @@
     "bluebird": "3.3.4",
     "cross-spawn-async": "2.2.1",
     "dateformat": "1.0.12",
-    "debug": "2.2.0"
+    "debug": "2.2.0",
+    "firefox-launch": "git://github.com/shane-tomlinson/firefox-launch#3bd641d04a277ce1b865e6de4b4a568c04481326",
+    "firefox-location": "1.0.2"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
