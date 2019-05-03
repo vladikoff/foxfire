@@ -12,6 +12,7 @@ var userJsContents = require('./lib/user-js-contents');
  * Launch Firefox.
  * @param {Object} options - launcher options
  * @param {Object} options.profileOptions - Firefox profile options
+ * @param {Object} options.createProfile - Creates a permanent profile on disk
  * @param {Array} options.args - Firefox arguments, see developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options
  *
  * @example
